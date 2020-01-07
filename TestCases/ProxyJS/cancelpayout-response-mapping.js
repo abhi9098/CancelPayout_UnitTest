@@ -1,7 +1,6 @@
 var request = JSON.parse(context.getVariable('originalRequest'));
-
-  //print(JSON.stringify(request));
-var response = JSON.parse(context.getVariable('response.content'));
+ // print(JSON.stringify(request));
+  var response = JSON.parse(context.getVariable('response.content'));
 var newresponse= {};
 if('originatorDetail' in request)
 {
