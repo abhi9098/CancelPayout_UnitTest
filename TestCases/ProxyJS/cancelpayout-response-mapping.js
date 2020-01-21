@@ -38,19 +38,19 @@ if('cancellationRequestResponse' in response.submitDocumentResponse.submitDocume
 
 else if("errors" in response.submitDocumentResponse.submitDocumentReturn){
     newresponse["transactionDetail"]["status"] = "Validation Error"; 
-    if(response.submitDocumentResponse.submitDocumentReturn.errors.shortMsg.includes("transaction id or merchant transaction reference not found."))
-    newresponse["transactionDetail"]["description"] = "Payout not found";
-    else if(response.submitDocumentResponse.submitDocumentReturn.errors.shortMsg.includes("Supplied VAN does not belong to the calling merchant"))
-    newresponse["transactionDetail"]["description"] = "Payout not found";
-    else if(response.submitDocumentResponse.submitDocumentReturn.errors.shortMsg.includes("Schema validation failure during JAXB parsing"))
-    newresponse["transactionDetail"]["description"] = "Payout not found";
-    else if(response.submitDocumentResponse.submitDocumentReturn.errors.shortMsg.includes("Transaction not in a cancellable state."))
-     newresponse["transactionDetail"]["description"] = "Payout not cancellable";
-    else if(response.submitDocumentResponse.submitDocumentReturn.errors.shortMsg.includes("Cancellation Request received for a transaction that is already pending to be cancelled."))
-    newresponse["transactionDetail"]["description"] = "Pending Cancellation";
+            if(response.submitDocumentResponse.submitDocumentReturn.errors.shortMsg.includes("transaction id or merchant transaction reference not found."))
+            newresponse["transactionDetail"]["description"] = "Payout not found";
+            else if(response.submitDocumentResponse.submitDocumentReturn.errors.shortMsg.includes("Supplied VAN does not belong to the calling merchant"))
+            newresponse["transactionDetail"]["description"] = "Payout not found";
+            else if(response.submitDocumentResponse.submitDocumentReturn.errors.shortMsg.includes("Schema validation failure during JAXB parsing"))
+            newresponse["transactionDetail"]["description"] = "Payout not found";
+            else if(response.submitDocumentResponse.submitDocumentReturn.errors.shortMsg.includes("Transaction not in a cancellable state."))
+            newresponse["transactionDetail"]["description"] = "Payout not cancellable";
+            else if(response.submitDocumentResponse.submitDocumentReturn.errors.shortMsg.includes("Cancellation Request received for a transaction that is already pending to be cancelled."))
+            newresponse["transactionDetail"]["description"] = "Pending Cancellation";
           
 
 // context.setVariable("triggerError", "true");
 }
 context.setVariable('response.content', JSON.stringify(newresponse));
-context.setVariable("response.status.code", "200");
+context.setVariable("response.status.code", "200"); 
