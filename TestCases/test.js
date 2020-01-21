@@ -1,11 +1,16 @@
 var expect = require("chai").expect;
+const fs = require('fs');
+const csv2Json=require('../Utils/Csv2Json');
+
 const requestContent=require('./RequestsPayloads/request');
 const responseContent=require('./ResponsePayloads/response');
 
 const requestMapping='./ProxyJS/cancelpayout-request-mappping';
 const responseMapping='./ProxyJS/cancelpayout-response-mapping';
 
+
 var sinon = require('sinon');
+
 
 var contextVars = {};
 
@@ -33,148 +38,260 @@ afterEach(function() {
 });
 
 
-//#region  Mocha Tests here:
 
+//#region  Request
+ 
+//conversion csv to json 
+const CancelRequest_CsvFile = fs.readFileSync('./CSVFiles/RequestCSV/CancelRequest_CSV.csv', 'utf8');
+const CancelRequest_JsonData = JSON.parse(csv2Json.convert(CancelRequest_CsvFile));
 
 // testing request is mapped or not 
 describe("Request Maping Test Cases ", () => {
 
-  describe("Checking the request - paymentTrackingId Value", () => {
+    CancelRequest_JsonData.forEach(async function(data,i){
+
+          describe("Checking the Request CSV - Row No :-" + (1+i), () => {
+            
+                before(async function(){
+                  //set the payload
+                    requestContent.request_body.payload=data;
+
+                });
+
+                it("Checking ( paymentTrackingId ) field to ns20:epTransactionID" , (done) => {
+                    contextGetVariableMethod.withArgs("request.content").returns(JSON.stringify(requestContent.request_body));
+                    loadJS(requestMapping);
+                    var latestRequest =JSON.parse(contextVars["request.content"]);
+                    expect(latestRequest["parameters"]["ns20:cancellationRequest"]["ns20:epTransactionID"]).to.equal(requestContent.request_body.transactionDetail.paymentTrackingId);
+                    done();
+                  }).timeout(5000);
+            
+            
+                  it("Checking ns20:epTransactionID is not null" , (done) => {
+                    contextGetVariableMethod.withArgs("request.content").returns(JSON.stringify(requestContent.request_body));
+                    loadJS(requestMapping);
+                    var latestRequest =JSON.parse(contextVars["request.content"]);
+                    expect(latestRequest["parameters"]["ns20:cancellationRequest"]["ns20:epTransactionID"]).to.not.equal('');
+                    done();
+              }).timeout(5000);
+            
+          });
     
-    it("Checking ( paymentTrackingId ) field to ns20:epTransactionID" , (done) => {
-        contextGetVariableMethod.withArgs("request.content").returns(JSON.stringify(requestContent.request_body));
-        loadJS(requestMapping);
-        var latestRequest =JSON.parse(contextVars["request.content"]);
-        expect(latestRequest["parameters"]["ns20:cancellationRequest"]["ns20:epTransactionID"]).to.equal(requestContent.request_body.transactionDetail.paymentTrackingId);
-        done();
-      }).timeout(5000);
-
-
-      it("Checking ns20:epTransactionID is not null" , (done) => {
-        contextGetVariableMethod.withArgs("request.content").returns(JSON.stringify(requestContent.request_body));
-        loadJS(requestMapping);
-        var latestRequest =JSON.parse(contextVars["request.content"]);
-        expect(latestRequest["parameters"]["ns20:cancellationRequest"]["ns20:epTransactionID"]).to.not.equal(null);
-        done();
-      }).timeout(5000);
-     
-  });
-
+    }); //end of cancelRequest_json foreach
+ 
+ 
 });
-
-
-
-// testing response is mapped or not 
-
-describe("Response Maping Test Cases ", () => {
-
-  describe("sending the cancel transaction request first time", () => {      
-
-          it("Checking ( paymentTrackingId ) field with response epTransaction" , (done) => {
-            contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
-            contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.reponseCancelled));
-            loadJS(responseMapping);
-
-            var latestRequest =JSON.parse(contextVars["response.content"]);
-            expect(latestRequest["transactionDetail"]["paymentTrackingId"]).to.equal(requestContent.request_body.transactionDetail.paymentTrackingId);
-            done();
-            }).timeout(5000);
-
-
-          it("Checking paymentTrackingId is not null" , (done) => {
-            contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
-            contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.reponseCancelled));
-            loadJS(responseMapping);
-
-            var latestRequest =JSON.parse(contextVars["response.content"]);
-            expect(latestRequest["transactionDetail"]["paymentTrackingId"]).to.not.equal(null);
-            done();
-          }).timeout(5000);
-      
-          it("Checking Status" , (done) => {
-            contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
-            contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.reponseCancelled));
-            loadJS(responseMapping);
-
-            var latestRequest =JSON.parse(contextVars["response.content"]);
-            expect(latestRequest["transactionDetail"]["status"]).to.equal("Cancelled");
-            done();
-          }).timeout(5000);
-  });
-
-
-  describe("sending the cancel transaction request second time with same paymentTrackingId", () => {      
-
-    it("Checking ( paymentTrackingId ) field with response epTransaction" , (done) => {
-      contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
-      contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.reponseNotCancellable));
-      loadJS(responseMapping);
-
-      var latestRequest =JSON.parse(contextVars["response.content"]);
-      expect(latestRequest["transactionDetail"]["paymentTrackingId"]).to.equal(requestContent.request_body.transactionDetail.paymentTrackingId);
-      done();
-      }).timeout(5000);
-
-
-    it("Checking paymentTrackingId is not null" , (done) => {
-      contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
-      contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.reponseNotCancellable));
-      loadJS(responseMapping);
-
-      var latestRequest =JSON.parse(contextVars["response.content"]);
-      expect(latestRequest["transactionDetail"]["paymentTrackingId"]).to.not.equal(null);
-      done();
-    }).timeout(5000);
-
-    it("Checking Status" , (done) => {
-      contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
-      contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.reponseNotCancellable));
-      loadJS(responseMapping);
-
-      var latestRequest =JSON.parse(contextVars["response.content"]);
-      expect(latestRequest["transactionDetail"]["status"]).to.equal("Validation Error");
-      done();
-    }).timeout(5000);
-  });
-
-  describe("sending the invalid paymentTrackingId", () => {      
-
-    it("Checking ( paymentTrackingId ) field with response epTransaction" , (done) => {
-      contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
-      contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.response_epTransactionID_NOTFOUND));
-      loadJS(responseMapping);
-
-      var latestRequest =JSON.parse(contextVars["response.content"]);
-      expect(latestRequest["transactionDetail"]["paymentTrackingId"]).to.equal(requestContent.request_body.transactionDetail.paymentTrackingId);
-      done();
-      }).timeout(5000);
-
-
-    it("Checking paymentTrackingId is not null" , (done) => {
-      contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
-      contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.response_epTransactionID_NOTFOUND));
-      loadJS(responseMapping);
-
-      var latestRequest =JSON.parse(contextVars["response.content"]);
-      expect(latestRequest["transactionDetail"]["paymentTrackingId"]).to.not.equal(null);
-      done();
-    }).timeout(5000);
-
-    it("Checking Status" , (done) => {
-      contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
-      contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.response_epTransactionID_NOTFOUND));
-      loadJS(responseMapping);
-
-      var latestRequest =JSON.parse(contextVars["response.content"]);
-      expect(latestRequest["transactionDetail"]["status"]).to.equal("Validation Error");
-      done();
-    }).timeout(5000);
-  });
-
-});
-
 
 //#endregion
+
+//#region  Response - Cancelled
+
+//conversion csv to json 
+const CancelSuccessResponse_CsvFile = fs.readFileSync('./CSVFiles/ResponseCSV/Cancelled_Response_CSV.csv', 'utf8');
+const CancelSuccessResponse_JsonData = JSON.parse(csv2Json.convert(CancelSuccessResponse_CsvFile));
+
+describe("Response Maping of Status= Cancelled ( Test Cases ) - ", () => {
+
+        CancelSuccessResponse_JsonData.forEach(async function(data,i){
+        
+              describe("Checking Cancelled_Response_CSV - Row No :- " + (1+i), () => { 
+             
+                before(async function(){
+                  //set the request payload
+                    requestContent.request_body.payload=CancelRequest_JsonData[i];
+                  //set the response payload
+                    responseContent.responseSuccessCancelled.payload=data;
+
+                });     
+
+                it("Checking originatorDetail.acquiringBIN field " , (done) => {
+                  contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                  contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.responseSuccessCancelled));
+                  loadJS(responseMapping);
+
+                  var latestRequest =JSON.parse(contextVars["response.content"]);
+                  expect(latestRequest["originatorDetail"]["acquiringBIN"]).to.equal(requestContent.request_body.originatorDetail.acquiringBIN);
+                  done();
+                  }).timeout(5000);
+
+
+                it("Checking originatorDetail.merchantId field " , (done) => {
+                  contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                  contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.responseSuccessCancelled));
+                  loadJS(responseMapping);
+
+                  var latestRequest =JSON.parse(contextVars["response.content"]);
+                  expect(latestRequest["originatorDetail"]["merchantId"]).to.equal(requestContent.request_body.originatorDetail.merchantId);
+                  done();
+                  }).timeout(5000);
+
+                it("Checking transactionDetail.retrievalReferenceNumber field " , (done) => {
+                  contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                  contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.responseSuccessCancelled));
+                  loadJS(responseMapping);
+
+                  var latestRequest =JSON.parse(contextVars["response.content"]);
+                  expect(latestRequest["transactionDetail"]["retrievalReferenceNumber"]).to.equal(requestContent.request_body.transactionDetail.retrievalReferenceNumber);
+                  done();
+                  }).timeout(5000);
+
+                it("Checking transactionDetail.systemTraceAuditNumber field " , (done) => {
+                  contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                  contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.responseSuccessCancelled));
+                  loadJS(responseMapping);
+
+                  var latestRequest =JSON.parse(contextVars["response.content"]);
+                  expect(latestRequest["transactionDetail"]["systemTraceAuditNumber"]).to.equal(requestContent.request_body.transactionDetail.systemTraceAuditNumber);
+                  done();
+                  }).timeout(5000);
+    
+
+                it("Checking transactionDetail.transmissionDateTime field " , (done) => {
+                  contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                  contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.responseSuccessCancelled));
+                  loadJS(responseMapping);
+
+                  var latestRequest =JSON.parse(contextVars["response.content"]);
+                  expect(latestRequest["transactionDetail"]["transmissionDateTime"]).to.equal(requestContent.request_body.transactionDetail.transmissionDateTime);
+                  done();
+                  }).timeout(5000);
+
+                it("Checking transactionDetail.paymentTrackingId field " , (done) => {
+                  contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                  contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.responseSuccessCancelled));
+                  loadJS(responseMapping);
+
+                  var latestRequest =JSON.parse(contextVars["response.content"]);
+                  expect(latestRequest["transactionDetail"]["paymentTrackingId"]).to.equal(requestContent.request_body.transactionDetail.paymentTrackingId);
+                  done();
+                  }).timeout(5000);
+
+
+                it("Checking transactionDetail.status field " , (done) => {
+                  contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                  contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.responseSuccessCancelled));
+                  loadJS(responseMapping);
+
+                  var latestRequest =JSON.parse(contextVars["response.content"]);
+                  expect(latestRequest["transactionDetail"]["status"]).to.equal("Cancelled");
+                  done();
+                  }).timeout(5000);  
+
+                
+
+              });
+
+        });//end of forEach
+              
+
+});
+
+//#endregion
+
+//#region  Response - PendingCancellation
+
+//conversion csv to json 
+const PendingCancellationResponse_CsvFile = fs.readFileSync('./CSVFiles/ResponseCSV/PendingCancellation_Response_CSV.csv', 'utf8');
+const PendingCancellation_JsonData = JSON.parse(csv2Json.convert(PendingCancellationResponse_CsvFile));
+
+describe("Response Maping of Status= PendingCancellation ( Test Cases ) - ", () => {
+
+      PendingCancellation_JsonData.forEach(async function(data,i){
+        
+              describe("Checking PendingCancellation_Response_CSV - Row No :- " + (1+i), () => { 
+             
+                before(async function(){
+                  //set the request payload
+                    requestContent.request_body.payload=CancelRequest_JsonData[i];
+                  //set the response payload
+                    responseContent.responsePendingCancellation.payload=data;
+
+                });     
+
+                it("Checking originatorDetail.acquiringBIN field " , (done) => {
+                  contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                  contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.responsePendingCancellation));
+                  loadJS(responseMapping);
+
+                  var latestRequest =JSON.parse(contextVars["response.content"]);
+                  expect(latestRequest["originatorDetail"]["acquiringBIN"]).to.equal(requestContent.request_body.originatorDetail.acquiringBIN);
+                  done();
+                  }).timeout(5000);
+
+
+                it("Checking originatorDetail.merchantId field " , (done) => {
+                  contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                  contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.responsePendingCancellation));
+                  loadJS(responseMapping);
+
+                  var latestRequest =JSON.parse(contextVars["response.content"]);
+                  expect(latestRequest["originatorDetail"]["merchantId"]).to.equal(requestContent.request_body.originatorDetail.merchantId);
+                  done();
+                  }).timeout(5000);
+
+                it("Checking transactionDetail.retrievalReferenceNumber field " , (done) => {
+                  contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                  contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.responsePendingCancellation));
+                  loadJS(responseMapping);
+
+                  var latestRequest =JSON.parse(contextVars["response.content"]);
+                  expect(latestRequest["transactionDetail"]["retrievalReferenceNumber"]).to.equal(requestContent.request_body.transactionDetail.retrievalReferenceNumber);
+                  done();
+                  }).timeout(5000);
+
+                it("Checking transactionDetail.systemTraceAuditNumber field " , (done) => {
+                  contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                  contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.responsePendingCancellation));
+                  loadJS(responseMapping);
+
+                  var latestRequest =JSON.parse(contextVars["response.content"]);
+                  expect(latestRequest["transactionDetail"]["systemTraceAuditNumber"]).to.equal(requestContent.request_body.transactionDetail.systemTraceAuditNumber);
+                  done();
+                  }).timeout(5000);
+    
+
+                it("Checking transactionDetail.transmissionDateTime field " , (done) => {
+                  contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                  contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.responsePendingCancellation));
+                  loadJS(responseMapping);
+
+                  var latestRequest =JSON.parse(contextVars["response.content"]);
+                  expect(latestRequest["transactionDetail"]["transmissionDateTime"]).to.equal(requestContent.request_body.transactionDetail.transmissionDateTime);
+                  done();
+                  }).timeout(5000);
+
+                it("Checking transactionDetail.paymentTrackingId field " , (done) => {
+                  contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                  contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.responsePendingCancellation));
+                  loadJS(responseMapping);
+
+                  var latestRequest =JSON.parse(contextVars["response.content"]);
+                  expect(latestRequest["transactionDetail"]["paymentTrackingId"]).to.equal(requestContent.request_body.transactionDetail.paymentTrackingId);
+                  done();
+                  }).timeout(5000);
+
+
+                it("Checking transactionDetail.status field " , (done) => {
+                  contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                  contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(responseContent.responsePendingCancellation));
+                  loadJS(responseMapping);
+
+                  var latestRequest =JSON.parse(contextVars["response.content"]);
+                  expect(latestRequest["transactionDetail"]["status"]).to.equal("PendingCancellation");
+                  done();
+                  }).timeout(5000);  
+
+
+
+              });
+
+        });//end of forEach
+              
+
+});
+
+//#endregion
+
 
 //#region function to remove the require file cache 
 
