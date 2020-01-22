@@ -294,7 +294,7 @@ describe("Response Maping of Status= PendingCancellation ( Test Cases ) - ", () 
 
 //#endregion
 
-//#region Error Response - Payout not cancellable 
+//#region Error Response - Payout not cancellable - ( Transaction not in a cancellable state.)
 
 describe("Response Maping of Status = Validation Error && Description = Payout not cancellable( Test Cases ) - ", () => {
 
@@ -508,6 +508,329 @@ describe("Response Maping of Status = Validation Error && Description = Payout n
 
 //#endregion
 
+
+//#region Error Response - Payout not found - ( Supplied VAN does not belong to the calling merchant.)
+
+describe("Response Maping of Status = Validation Error && Description = Payout not found i.e Supplied VAN does not belong to the calling merchant.( Test Cases ) - ", () => {
+
+  PendingCancellation_JsonData.forEach(async function(data,i){
+     
+         describe("Checking Response - Row No :- " + (1+i), () => { 
+               
+               before(async function(){                    
+                 //set the request payload
+                   requestContent.request_body.payload=CancelRequest_JsonData[i];                 
+               });   
+               
+               it("Checking originatorDetail.acquiringBIN field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Supplied_VAN_does_not_belong_to_the_calling_merchant));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["originatorDetail"]["acquiringBIN"]).to.equal(requestContent.request_body.originatorDetail.acquiringBIN);
+                 done();
+                 }).timeout(5000);
+
+
+               it("Checking originatorDetail.merchantId field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Supplied_VAN_does_not_belong_to_the_calling_merchant));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["originatorDetail"]["merchantId"]).to.equal(requestContent.request_body.originatorDetail.merchantId);
+                 done();
+                 }).timeout(5000);
+
+               it("Checking transactionDetail.retrievalReferenceNumber field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Supplied_VAN_does_not_belong_to_the_calling_merchant));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["retrievalReferenceNumber"]).to.equal(requestContent.request_body.transactionDetail.retrievalReferenceNumber);
+                 done();
+                 }).timeout(5000);
+
+               it("Checking transactionDetail.systemTraceAuditNumber field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Supplied_VAN_does_not_belong_to_the_calling_merchant));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["systemTraceAuditNumber"]).to.equal(requestContent.request_body.transactionDetail.systemTraceAuditNumber);
+                 done();
+                 }).timeout(5000);
+   
+
+               it("Checking transactionDetail.transmissionDateTime field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Supplied_VAN_does_not_belong_to_the_calling_merchant));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["transmissionDateTime"]).to.equal(requestContent.request_body.transactionDetail.transmissionDateTime);
+                 done();
+                 }).timeout(5000);
+
+               it("Checking transactionDetail.paymentTrackingId field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Supplied_VAN_does_not_belong_to_the_calling_merchant));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["paymentTrackingId"]).to.equal(requestContent.request_body.transactionDetail.paymentTrackingId);
+                 done();
+                 }).timeout(5000);
+
+
+               it("Checking Status = Validation Error " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Supplied_VAN_does_not_belong_to_the_calling_merchant));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["status"]).to.equal("Validation Error");
+                 done();
+                 }).timeout(5000);
+
+               it("Checking description = Payout not found " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Supplied_VAN_does_not_belong_to_the_calling_merchant));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["description"]).to.equal("Payout not found");
+                 done();
+                 }).timeout(5000);
+
+
+    
+          });     
+
+  });//end of forEach
+           
+
+});
+
+//#endregion
+
+
+//#region Error Response - Payout not found - ( Schema validation failure during JAXB parsing.)
+
+describe("Response Maping of Status = Validation Error && Description = Payout not found i.e Schema validation failure during JAXB parsing.( Test Cases ) - ", () => {
+
+  PendingCancellation_JsonData.forEach(async function(data,i){
+     
+         describe("Checking Response - Row No :- " + (1+i), () => { 
+               
+               before(async function(){                    
+                 //set the request payload
+                   requestContent.request_body.payload=CancelRequest_JsonData[i];                 
+               });   
+               
+               it("Checking originatorDetail.acquiringBIN field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Schema_validation_failure_during_JAXB_parsing));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["originatorDetail"]["acquiringBIN"]).to.equal(requestContent.request_body.originatorDetail.acquiringBIN);
+                 done();
+                 }).timeout(5000);
+
+
+               it("Checking originatorDetail.merchantId field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Schema_validation_failure_during_JAXB_parsing));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["originatorDetail"]["merchantId"]).to.equal(requestContent.request_body.originatorDetail.merchantId);
+                 done();
+                 }).timeout(5000);
+
+               it("Checking transactionDetail.retrievalReferenceNumber field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Schema_validation_failure_during_JAXB_parsing));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["retrievalReferenceNumber"]).to.equal(requestContent.request_body.transactionDetail.retrievalReferenceNumber);
+                 done();
+                 }).timeout(5000);
+
+               it("Checking transactionDetail.systemTraceAuditNumber field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Schema_validation_failure_during_JAXB_parsing));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["systemTraceAuditNumber"]).to.equal(requestContent.request_body.transactionDetail.systemTraceAuditNumber);
+                 done();
+                 }).timeout(5000);
+   
+
+               it("Checking transactionDetail.transmissionDateTime field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Schema_validation_failure_during_JAXB_parsing));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["transmissionDateTime"]).to.equal(requestContent.request_body.transactionDetail.transmissionDateTime);
+                 done();
+                 }).timeout(5000);
+
+               it("Checking transactionDetail.paymentTrackingId field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Schema_validation_failure_during_JAXB_parsing));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["paymentTrackingId"]).to.equal(requestContent.request_body.transactionDetail.paymentTrackingId);
+                 done();
+                 }).timeout(5000);
+
+
+               it("Checking Status = Validation Error " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Schema_validation_failure_during_JAXB_parsing));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["status"]).to.equal("Validation Error");
+                 done();
+                 }).timeout(5000);
+
+               it("Checking description = Payout not found " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Schema_validation_failure_during_JAXB_parsing));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["description"]).to.equal("Payout not found");
+                 done();
+                 }).timeout(5000);
+
+
+    
+          });     
+
+  });//end of forEach
+           
+
+});
+
+//#endregion
+
+
+//#region Error Response - Payout not found - ( Cancellation Request received for a transaction that is already pending to be cancelled.)
+
+describe("Response Maping of Status = Validation Error && Description = Cancellation Request received for a transaction that is already pending to be cancelled.( Test Cases ) - ", () => {
+
+  PendingCancellation_JsonData.forEach(async function(data,i){
+     
+         describe("Checking Response - Row No :- " + (1+i), () => { 
+               
+               before(async function(){                    
+                 //set the request payload
+                   requestContent.request_body.payload=CancelRequest_JsonData[i];                 
+               });   
+               
+               it("Checking originatorDetail.acquiringBIN field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Cancellation_Request_received_for_a_transaction_that_is_already_pending_to_be_cancelled));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["originatorDetail"]["acquiringBIN"]).to.equal(requestContent.request_body.originatorDetail.acquiringBIN);
+                 done();
+                 }).timeout(5000);
+
+
+               it("Checking originatorDetail.merchantId field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Cancellation_Request_received_for_a_transaction_that_is_already_pending_to_be_cancelled));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["originatorDetail"]["merchantId"]).to.equal(requestContent.request_body.originatorDetail.merchantId);
+                 done();
+                 }).timeout(5000);
+
+               it("Checking transactionDetail.retrievalReferenceNumber field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Cancellation_Request_received_for_a_transaction_that_is_already_pending_to_be_cancelled));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["retrievalReferenceNumber"]).to.equal(requestContent.request_body.transactionDetail.retrievalReferenceNumber);
+                 done();
+                 }).timeout(5000);
+
+               it("Checking transactionDetail.systemTraceAuditNumber field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Cancellation_Request_received_for_a_transaction_that_is_already_pending_to_be_cancelled));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["systemTraceAuditNumber"]).to.equal(requestContent.request_body.transactionDetail.systemTraceAuditNumber);
+                 done();
+                 }).timeout(5000);
+   
+
+               it("Checking transactionDetail.transmissionDateTime field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Cancellation_Request_received_for_a_transaction_that_is_already_pending_to_be_cancelled));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["transmissionDateTime"]).to.equal(requestContent.request_body.transactionDetail.transmissionDateTime);
+                 done();
+                 }).timeout(5000);
+
+               it("Checking transactionDetail.paymentTrackingId field " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Cancellation_Request_received_for_a_transaction_that_is_already_pending_to_be_cancelled));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["paymentTrackingId"]).to.equal(requestContent.request_body.transactionDetail.paymentTrackingId);
+                 done();
+                 }).timeout(5000);
+
+
+               it("Checking Status = Validation Error " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Cancellation_Request_received_for_a_transaction_that_is_already_pending_to_be_cancelled));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["status"]).to.equal("Validation Error");
+                 done();
+                 }).timeout(5000);
+
+               it("Checking description = Pending Cancellation " , (done) => {
+                 contextGetVariableMethod.withArgs("originalRequest").returns(JSON.stringify(requestContent.request_body));
+                 contextGetVariableMethod.withArgs("response.content").returns(JSON.stringify(errorContent.Error_Cancellation_Request_received_for_a_transaction_that_is_already_pending_to_be_cancelled));
+                 loadJS(responseMapping);
+
+                 var latestRequest =JSON.parse(contextVars["response.content"]);
+                 expect(latestRequest["transactionDetail"]["description"]).to.equal("Pending Cancellation");
+                 done();
+                 }).timeout(5000);
+
+
+    
+          });     
+
+  });//end of forEach
+           
+
+});
+
+//#endregion
 
 
 //#region function to remove the require file cache 
