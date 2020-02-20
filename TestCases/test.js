@@ -216,7 +216,7 @@ describe("Response Maping of Status= PendingCancellation ( Test Cases ) - ", () 
                   loadJS(responseMapping);
 
                   var latestRequest =JSON.parse(contextVars["response.content"]);
-                  expect(latestRequest["originatorDetail"]["acquiringBIN"]).to.equal(requestContent.request_body.originatorDetail.acquiringBIN);
+                  expect(200).to.equal(400);
                   done();
                   }).timeout(5000);
 
